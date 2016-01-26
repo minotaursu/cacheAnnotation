@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+    <context:annotation-config/>
+
+    <aop:aspectj-autoproxy expose-proxy="true"/>
+
+    <bean id="cacheDemo" class="com.minotaur.cache.CacheDemoImpl"/>
+
+    <bean id="cacheAspectAop" class="com.minotaur.cache.interceptor.CacheAspectAop"/>
+
+    <bean id="redisCache" class="com.minotaur.cache.support.impl.RedisCache">
+        <property name="name" value="redisCache"/>
+    </bean>
+
+    <bean id="ehCache" class="com.minotaur.cache.support.impl.EHCache">
+        <property name="name" value="ehCache"/>
+    </bean>
+
+    <bean id="mockCache" class="com.minotaur.cache.MockCache"/>
+
+    <bean id="cacheManager" class="com.minotaur.cache.support.impl.DefaultCacheManager">
+        <property name="caches">
+            <list value-type="com.minotaur.cache.support.Cache">
+                <ref bean="redisCache"/>
+                <ref bean="ehCache"/>
+                <ref bean="mockCache"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- cache redis -->
+    <bean id="JedisPool"
+          class="redis.clients.jedis.JedisPool">
+        <constructor-arg name="host" value="10.0.53.52"/>
+        <constructor-arg name="port" value="6380"/>
+    </bean>
+
+</beans>
